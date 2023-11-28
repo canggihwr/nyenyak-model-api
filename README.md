@@ -8,6 +8,7 @@
 ### 1. Create a virtual environment (optional)
 ```
 python -m venv venv
+venv\Scripts\activate
 ```
 ### 2. Install dependencies
 ```
