@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-- Python 3.xgit 
+- Python 3.x
 - pip (package installer for Python)
 
 ### 1. Create a virtual environment (optional)
