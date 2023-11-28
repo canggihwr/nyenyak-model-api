@@ -9,9 +9,8 @@ RFC_MODEL = joblib.load("models/sleep_disorder_rfc_model.pkl")
 def return_prediction(model, sample_json):
     predictions = []
 
-    # Ensure sample_json is a dictionary
     if isinstance(sample_json, dict):
-        data = [list(sample_json.values())]  # Convert dictionary values to a list and then to NumPy array
+        data = [list(sample_json.values())]
         result = model.predict(data)
         labels = ["Insomnia", "None", "Sleep Apnea"]
         predicted_class = labels[result[0]]
@@ -30,11 +29,7 @@ def index():
 @app.route('/prediction', methods=['POST'])
 def predict_sleep_disorder():
     # RECEIVE THE REQUEST
-    content = request.get_json(force=True)  # Parse JSON manually
-
-    # Print additional information for debugging
-    print("[INFO] Type of content: ", type(content))
-    print("[INFO] Raw content of the request: ", request.data)
+    content = request.get_json(force=True)  # Parse JSON
 
     # PREDICT THE CLASS USING HELPER FUNCTION
     prediction_result = return_prediction(model=RFC_MODEL, sample_json=content)
