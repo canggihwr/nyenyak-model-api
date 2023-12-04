@@ -1,26 +1,13 @@
+import os
 from flask import Flask, request, jsonify
-import json
+from joblib import load
 import numpy as np
-import pickle
-import joblib
-
-RFC_MODEL = joblib.load("models/sleep_disorder_rfc_model.pkl")
-
-def return_prediction(model, sample_json):
-    predictions = []
-
-    if isinstance(sample_json, dict):
-        data = [list(sample_json.values())]
-        result = model.predict(data)
-        labels = ["Insomnia", "None", "Sleep Apnea"]
-        predicted_class = labels[result[0]]
-        predictions.append(predicted_class)
-    else:
-        print("[ERROR] Invalid JSON format. Expected a dictionary.")
-
-    return predictions
+import requests
 
 app = Flask(__name__)
+
+# Load the saved model
+loaded_model = load("models/sleep_disorder_rfc_model.pkl")
 
 @app.route('/')
 def index():
@@ -29,19 +16,27 @@ def index():
 @app.route('/prediction', methods=['POST'])
 def predict_sleep_disorder():
     # RECEIVE THE REQUEST
-    content = request.get_json(force=True)  # Parse JSON
+    content = request.json
 
-    # PREDICT THE CLASS USING HELPER FUNCTION
-    prediction_result = return_prediction(model=RFC_MODEL, sample_json=content)
+    # PRINT THE DATA IN THE REQUEST
+    print("[INFO] Request: ", content)
+
+    # CONVERT INPUT TO NUMPY ARRAY
+    input_data = np.array(list(content.values())).reshape(1, -1)
+
+    # PREDICT THE CLASS USING THE LOADED MODEL
+    result = loaded_model.predict(input_data)
+    labels = ["Insomnia", "None", "Sleep Apnea"]
+    predicted_class = labels[result[0]]
 
     # ADD THE PREDICTION RESULT TO THE INPUT DATA
-    content['sleep_disorder'] = prediction_result
+    content['sleep_disorder'] = predicted_class
 
     # PRINT THE RESULT
-    print("[INFO] Response: ", prediction_result)
+    print("[INFO] Response: ", predicted_class)
 
     # SEND THE RESULT AS JSON OBJECT
-    return jsonify(prediction_result)
+    return jsonify(content)
 
 if __name__ == '__main__':
-    app.run("0.0.0.0")
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
