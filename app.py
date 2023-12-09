@@ -1,13 +1,12 @@
 import os
 from flask import Flask, request, jsonify
-from joblib import load
 import numpy as np
-import requests
+import tensorflow as tf
 
 app = Flask(__name__)
 
-# Load the saved model
-loaded_model = load("models/sleep_disorder_rfc_model.pkl")
+# Load the saved model in .h5 format
+loaded_model = tf.keras.models.load_model("models/model_ann.h5")
 
 @app.route('/')
 def index():
@@ -26,8 +25,11 @@ def predict_sleep_disorder():
 
     # PREDICT THE CLASS USING THE LOADED MODEL
     result = loaded_model.predict(input_data)
+    
+    # Assuming the result is a probability distribution over classes
+    predicted_class_index = np.argmax(result)
     labels = ["Insomnia", "None", "Sleep Apnea"]
-    predicted_class = labels[result[0]]
+    predicted_class = labels[predicted_class_index]
 
     # ADD THE PREDICTION RESULT TO THE INPUT DATA
     content['sleep_disorder'] = predicted_class
