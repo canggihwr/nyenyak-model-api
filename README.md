@@ -16,23 +16,20 @@ pip install -r requirements.txt
 ```
 ### 3. Run the Flask app
 ```
-python nyenyak.py
+python app.py
 ```
 Use the `/prediction` endpoint for making predictions. Send a POST request with JSON data to get predictions.
 ```
 {
-  "Age": 27,
-  "Sleep_Duration": 6.1,
-  "Sleep_Quality": 6,
-  "Physical_Activity_Level": 42,
-  "Stress_Level": 6,
-  "Heart_Rate": 77,
-  "Daily_Steps": 4200,
-  "Gender_Male": 1,
-  "BMI_Category_Obese": 0,
-  "BMI_Category_Overweight": 1,
-  "BP_Category_Normal": 0,
-  "BP_Category_Stage 1": 1,
-  "BP_Category_Stage 2": 0
+  "Gender": 0,
+  "Age": 35,
+  "Sleep_Duration": 6.5,
+  "Sleep_Quality": 7,
+  "Physical_Activity_Level": 45,
+  "Stress_Level": 9,
+  "BMI_Category": 1,
+  "Heart_Rate": 97,
+  "Daily_Steps": 1200,
+  "BP_Category": 1
 }
 ```
