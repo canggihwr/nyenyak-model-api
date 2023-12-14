@@ -7,7 +7,7 @@ import joblib
 app = Flask(__name__)
 
 # Load the normalization model
-scaler = joblib.load('models/normalization_model.joblib')
+scaler = joblib.load('models/scaler_model.save')
 
 # Load the saved model
 loaded_model = tf.keras.models.load_model('models/model_ann.h5')
@@ -39,7 +39,8 @@ def predict_sleep_disorder():
     })
 
     # Normalize the input data using the pre-trained scaler
-    input_data[['Age', 'Sleep_Duration', 'Physical_Activity_Level', 'Heart_Rate', 'Daily_Steps']] = scaler.transform(input_data[['Age', 'Sleep_Duration', 'Physical_Activity_Level', 'Heart_Rate', 'Daily_Steps']])
+    #input_data[['Age', 'Sleep_Duration', 'Physical_Activity_Level', 'Heart_Rate', 'Daily_Steps']] = scaler.transform(input_data[['Age', 'Sleep_Duration', 'Physical_Activity_Level', 'Heart_Rate', 'Daily_Steps']])
+    input_data[['Age', 'Sleep_Duration', 'Physical_Activity_Level', 'Heart_Rate', 'Daily_Steps']] = 0.0
     print(input_data)
     # PREDICT THE CLASS USING THE LOADED MODEL
     prediction = loaded_model.predict(input_data)
@@ -48,7 +49,7 @@ def predict_sleep_disorder():
     predicted_class = int(tf.argmax(prediction, axis=1))
 
     # Define the mapping of predicted classes
-    sleep_disorder_mapping = {0: 'None', 1: 'Insomnia', 2: 'Sleep Apnea'}
+    sleep_disorder_mapping = {0: 'Insomnia', 1: 'None', 2: 'Sleep Apnea'}
 
     # Get the predicted sleep disorder category
     predicted_sleep_disorder = sleep_disorder_mapping[predicted_class]
